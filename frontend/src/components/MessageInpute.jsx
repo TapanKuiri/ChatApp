@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import axios from "axios";
 import io from "socket.io-client";
 import { MessageContext } from "../context/MessageContext";
@@ -7,13 +7,14 @@ const backend = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 const userId = import.meta.env.VITE_APPLICATION_ID || "123";
 const socket = io("http://localhost:3000");
 
-export default function MessageInput() {
+export default function MessageInpute() {
   const { allMessages, setAllMessages, code } = useContext(MessageContext);
   const [text, setText] = useState("");
+  const inputRef = useRef(null);
 
   const sendMessage = async () => {
     if (!text.trim()) return;
-    const newMsg = { text, code , createdAt: new Date().toISOString() };
+    const newMsg = { text, code, createdAt: new Date().toISOString() };
 
     setAllMessages((prev) => [...prev, { ...newMsg }]); // optimistic update
     socket.emit("send_message", newMsg);
@@ -34,16 +35,28 @@ export default function MessageInput() {
     return () => socket.off("receive_message");
   }, []);
 
+  // Scroll input into view on focus (mobile keyboard)
+  const handleFocus = () => {
+    setTimeout(() => {
+      inputRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+    }, 300);
+  };
+
   return (
-    <div className="p-3 bg-gray-400 flex gap-2 items-center">
+    <div className="p-2 bg-gray-400 flex gap-2 items-center sticky bottom-0 z-50">
       <textarea
+        ref={inputRef}
+        onFocus={handleFocus}
         onChange={(e) => setText(e.target.value)}
         value={text}
-        className="flex-1 border rounded p-2 resize-none bg-white"
+        className="flex-1 border rounded-xl px-3 py-2 resize-none bg-white focus:outline-none focus:ring-1 focus:ring-blue-400"
         rows={1}
         placeholder="Type a message"
       />
-      <button onClick={sendMessage} className="bg-blue-600 text-white px-4 py-2 rounded">
+      <button
+        onClick={sendMessage}
+        className="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700"
+      >
         Send
       </button>
     </div>
