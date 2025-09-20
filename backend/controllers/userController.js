@@ -6,7 +6,6 @@ export const loginUser = async (req, res) => {
     if (!userId || !password) {
       return res.status(400).json({ success: false, message: "Missing parameters" });
     }
-
     let code = null;
 
     // Check credentials

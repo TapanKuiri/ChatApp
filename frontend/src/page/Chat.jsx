@@ -15,7 +15,6 @@ function Chat() {
 
   useEffect(() => {
     if (code !== A_ID  && code !== T_ID) {
-      console.log(code, A_ID, T_ID);
       navigate("/login");
     }
   }, [code, navigate]);

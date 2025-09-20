@@ -17,6 +17,7 @@ export default function Login() {
     try {
       const res = await axios.post(`${backend}/api/users/login`, { userId, password });
       if (res.data.success) {
+        setCode(res.data.message);
         navigate("/chat");
       } else {
         alert("Invalid credentials");
