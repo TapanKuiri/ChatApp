@@ -19,6 +19,7 @@ export default function MessageInpute() {
     setAllMessages((prev) => [...prev, { ...newMsg }]); // optimistic update
     socket.emit("send_message", newMsg);
     setText("");
+    if (inputRef.current) inputRef.current.style.height = "auto"; // reset height
 
     try {
       await axios.post(`${backend}/api/messages/send`, { userId, newMsg });
@@ -35,11 +36,16 @@ export default function MessageInpute() {
     return () => socket.off("receive_message");
   }, []);
 
-  // Scroll input into view on focus (mobile keyboard)
   const handleFocus = () => {
     setTimeout(() => {
       inputRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
     }, 300);
+  };
+
+  const handleInput = (e) => {
+    setText(e.target.value);
+    e.target.style.height = "auto"; // reset height
+    e.target.style.height = `${e.target.scrollHeight}px`; // set to scrollHeight
   };
 
   return (
@@ -47,10 +53,9 @@ export default function MessageInpute() {
       <textarea
         ref={inputRef}
         onFocus={handleFocus}
-        onChange={(e) => setText(e.target.value)}
+        onInput={handleInput}
         value={text}
         className="flex-1 border rounded-xl px-3 py-2 resize-none bg-white focus:outline-none focus:ring-1 focus:ring-blue-400"
-        rows={1}
         placeholder="Type a message"
       />
       <button

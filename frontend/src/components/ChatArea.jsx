@@ -13,10 +13,12 @@ export default function ChatArea() {
     <div className="space-y-3">
       {allMessages.map((m, i) => {
         const isMyMessage = m.code === code;
-        const time = new Date(m.createdAt).toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        });
+
+        const localDate = new Date(m.createdAt);
+        const hours = localDate.getHours() % 12 || 12;
+        const minutes = localDate.getMinutes().toString().padStart(2, "0");
+        const ampm = localDate.getHours() >= 12 ? "PM" : "AM";
+        const timeString = `${hours}:${minutes} ${ampm}`;
 
         return (
           <div key={i} className="flex flex-col">
@@ -33,7 +35,7 @@ export default function ChatArea() {
                   isMyMessage ? "text-gray-300" : "text-gray-600"
                 }`}
               >
-                {time}
+                {timeString}
               </div>
             </div>
           </div>

@@ -9,14 +9,17 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const backend = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!userId.trim() || !password.trim()) return alert("Enter credentials");
 
     try {
+      setLoading(true);
       const res = await axios.post(`${backend}/api/users/login`, { userId, password });
       if (res.data.success) {
+        setLoading(false);
         setCode(res.data.message);
         navigate("/chat");
       } else {
@@ -45,7 +48,7 @@ export default function Login() {
           placeholder="Password"
         />
         <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded">
-          Login
+          {loading ? "Loading..." : "Login"}
         </button>
       </form>
     </div>
