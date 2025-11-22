@@ -21,7 +21,9 @@ export default function Login() {
       if (res.data.success) {
         setLoading(false);
         setCode(res.data.message);
-        navigate("/chat");
+        // navigate("/chat");
+        navigate("/");
+
       } else {
         alert("Invalid credentials");
       }

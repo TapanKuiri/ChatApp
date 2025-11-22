@@ -8,7 +8,7 @@ import { MessageContextProvider } from "./context/MessageContext";
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <MessageContextProvider>
-      <App />
+      {/* <App /> */}
     </MessageContextProvider>
     </BrowserRouter>
 );
